@@ -8,4 +8,5 @@ RUN set -eux; \
   apt-get -y install unzip; \
   cd /ipmi; \
   unzip IPMI*.zip; \
-  mv IPMI*/Linux/64bit/IPMICFG-Linux.x86_64 /usr/local/bin/ipmicfg
+  mv IPMI*/Linux/64bit/IPMICFG-Linux.x86_64 /usr/local/bin/ipmicfg; \
+  rm -rf /ipmi
