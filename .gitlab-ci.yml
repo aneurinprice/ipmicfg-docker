@@ -5,8 +5,12 @@ build:
   stage: build
   tags:
     - privileged
+  services:
+    - docker:19.03.13-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2376
   image:
-    name: docker:dind
+    name: docker:latest
   script:
     - mkdir -p ~/.docker
     - echo "{\"auths\":{\"${DOCKERHUB_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${PERSONAL_DOCKERHUB_USER}" "${PERSONAL_DOCKERHUB_PASSWORD}" | base64 | tr -d '\n')\"}}}" > ~/.docker/config.json
