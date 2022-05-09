@@ -4,11 +4,7 @@ stages:
 build:
   stage: build
   tags:
-    - privileged
-  services:
-    - docker:19.03.13-dind
-  variables:
-    DOCKER_HOST: tcp://docker:2376
+    - docker-socket
   image:
     name: docker:latest
   script:
