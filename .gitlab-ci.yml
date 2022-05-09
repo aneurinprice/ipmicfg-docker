@@ -10,7 +10,7 @@ build:
   script:
     - mkdir -p ~/.docker
     - echo "{\"auths\":{\"${DOCKERHUB_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${PERSONAL_DOCKERHUB_USER}" "${PERSONAL_DOCKERHUB_PASSWORD}" | base64 | tr -d '\n')\"}}}" > ~/.docker/config.json
-    - docker build --config ~/.docker/config.json -t ${CI_COMMIT_TAG} --file ${CI_PROJECT_DIR}/Dockerfile ${CI_PROJECT_DIR}
+    - docker build -t ${CI_COMMIT_TAG} --file ${CI_PROJECT_DIR}/Dockerfile ${CI_PROJECT_DIR}
     - docker tag "${CI_COMMIT_TAG}" "${PERSONAL_DOCKERHUB_USER}/${CI_PROJECT_NAME}:${CI_COMMIT_TAG}"
     - docker tag "${CI_COMMIT_TAG}" "${PERSONAL_DOCKERHUB_USER}/${CI_PROJECT_NAME}:latest"
     - docker push "${PERSONAL_DOCKERHUB_USER}/${CI_PROJECT_NAME}:${CI_COMMIT_TAG}"
