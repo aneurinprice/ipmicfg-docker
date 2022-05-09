@@ -4,14 +4,17 @@ stages:
 build:
   stage: build
   tags:
-    - docker-socket
+    - generic
   image:
-    name: docker:dind
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
   script:
-    - mkdir -p ~/.docker
-    - echo "{\"auths\":{\"${DOCKERHUB_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${PERSONAL_DOCKERHUB_USER}" "${PERSONAL_DOCKERHUB_PASSWORD}" | base64 | tr -d '\n')\"}}}" > ~/.docker/config.json
-    - docker build -t "${CI_COMMIT_SHORT_SHA}" --file ${CI_PROJECT_DIR}/Dockerfile ${CI_PROJECT_DIR}
-    - docker tag "${CI_COMMIT_SHORT_SHA}" "${PERSONAL_DOCKERHUB_USER}/${CI_PROJECT_NAME}:${CI_COMMIT_SHORT_SHA}"
-    - docker tag "${CI_COMMIT_SHORT_SHA}" "${PERSONAL_DOCKERHUB_USER}/${CI_PROJECT_NAME}:latest"
-    - docker push "${PERSONAL_DOCKERHUB_USER}/${CI_PROJECT_NAME}:${CI_COMMIT_SHORT_SHA}"
-    - docker push "${PERSONAL_DOCKERHUB_USER}/${CI_PROJECT_NAME}:latest"
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"${DOCKERHUB_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${PERSONAL_DOCKERHUB_USER}" "${PERSONAL_DOCKERHUB_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --destination "${PERSONAL_DOCKERHUB_USER}/${CI_PROJECT_NAME}:${CI_COMMIT_SHORT_SHA}"
+      --destination "${PERSONAL_DOCKERHUB_USER}/${CI_PROJECT_NAME}:latest"
+
